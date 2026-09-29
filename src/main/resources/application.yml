@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: deepfine-inventory
+  datasource:
+    url: "${DB_URL:jdbc:postgresql://localhost:5432/deepfine_inventory}"
+    username: "${DB_USERNAME:deepfine}"
+    password: "${DB_PASSWORD:deepfine}"
