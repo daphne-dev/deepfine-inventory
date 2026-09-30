@@ -11,24 +11,20 @@ import com.deepfine.inventory.exception.InventoryRuleViolationException;
 import com.deepfine.inventory.exception.ProductNotFoundException;
 import com.deepfine.inventory.repository.InventoryBalanceRepository;
 import com.deepfine.inventory.repository.InventoryMovementRepository;
-import com.deepfine.inventory.repository.ProductRegistration;
 import com.deepfine.inventory.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class InventoryService {
-    private final ProductRegistration productRegistration;
     private final ProductRepository productRepository;
     private final InventoryBalanceRepository balanceRepository;
     private final InventoryMovementRepository movementRepository;
 
     public InventoryService(
-        ProductRegistration productRegistration,
-        ProductRepository productRepository,
-        InventoryBalanceRepository balanceRepository,
-        InventoryMovementRepository movementRepository) {
-        this.productRegistration = productRegistration;
+            ProductRepository productRepository,
+            InventoryBalanceRepository balanceRepository,
+            InventoryMovementRepository movementRepository) {
         this.productRepository = productRepository;
         this.balanceRepository = balanceRepository;
         this.movementRepository = movementRepository;
@@ -36,7 +32,7 @@ public class InventoryService {
 
     @Transactional
     public InboundResponse receive(InboundRequest request) {
-        productRegistration.createIfAbsent(request.sku(), request.name());
+        productRepository.createIfAbsent(request.sku(), request.name());
         Product product =
                 productRepository
                         .findBySkuForUpdate(request.sku())
