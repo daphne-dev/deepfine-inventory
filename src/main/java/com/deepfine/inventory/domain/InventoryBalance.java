@@ -26,8 +26,7 @@ public class InventoryBalance {
     @Column(nullable = false)
     private int quantity;
 
-    protected InventoryBalance() {
-    }
+    protected InventoryBalance() {}
 
     public InventoryBalance(Product product) {
         this.product = product;
@@ -42,6 +41,16 @@ public class InventoryBalance {
         } catch (ArithmeticException exception) {
             throw new InventoryRuleViolationException("재고 수량이 허용 범위를 초과합니다.");
         }
+    }
+
+    public void ship(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("출고 수량은 양수여야 합니다.");
+        }
+        if (quantity < amount) {
+            throw new InventoryRuleViolationException("재고 수량이 부족합니다.");
+        }
+        quantity -= amount;
     }
 
     public Integer getId() {

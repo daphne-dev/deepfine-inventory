@@ -2,6 +2,8 @@ package com.deepfine.inventory.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,7 +25,8 @@ public class InventoryMovement {
     private InventoryBalance balance;
 
     @Column(name = "movement_type", nullable = false, length = 16)
-    private String movementType;
+    @Enumerated(EnumType.STRING)
+    private MovementType movementType;
 
     @Column(nullable = false)
     private int quantity;
@@ -34,18 +37,23 @@ public class InventoryMovement {
     @Column(length = 500)
     private String reason;
 
-    protected InventoryMovement() {
-    }
+    protected InventoryMovement() {}
 
-    private InventoryMovement(InventoryBalance balance, int quantity, String reason) {
+    private InventoryMovement(
+            InventoryBalance balance, MovementType movementType, int quantity, String reason) {
         this.balance = balance;
-        this.movementType = "INBOUND";
+        this.movementType = movementType;
         this.quantity = quantity;
         this.balanceAfter = balance.getQuantity();
         this.reason = reason;
     }
 
     public static InventoryMovement inbound(InventoryBalance balance, int quantity, String reason) {
-        return new InventoryMovement(balance, quantity, reason);
+        return new InventoryMovement(balance, MovementType.INBOUND, quantity, reason);
+    }
+
+    public static InventoryMovement outbound(
+            InventoryBalance balance, int quantity, String reason) {
+        return new InventoryMovement(balance, MovementType.OUTBOUND, quantity, reason);
     }
 }
