@@ -2,6 +2,7 @@ package com.deepfine.inventory.controller;
 
 import com.deepfine.inventory.dto.InboundRequest;
 import com.deepfine.inventory.dto.InboundResponse;
+import com.deepfine.inventory.dto.InventoryResponse;
 import com.deepfine.inventory.dto.OutboundRequest;
 import com.deepfine.inventory.dto.OutboundResponse;
 import com.deepfine.inventory.service.InventoryService;
@@ -9,6 +10,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,5 +44,13 @@ public class InventoryController {
     @PostMapping("/outbounds")
     public ResponseEntity<OutboundResponse> ship(@Valid @RequestBody OutboundRequest request) {
         return ResponseEntity.ok(inventoryService.ship(request));
+    }
+
+    @Operation(summary = "현재 재고 조회", description = "SKU로 상품의 현재 재고 수량을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "조회 완료")
+    @ApiResponse(responseCode = "404", description = "등록되지 않은 SKU")
+    @GetMapping("/{sku}")
+    public ResponseEntity<InventoryResponse> getInventory(@PathVariable String sku) {
+        return ResponseEntity.ok(inventoryService.getInventory(sku));
     }
 }

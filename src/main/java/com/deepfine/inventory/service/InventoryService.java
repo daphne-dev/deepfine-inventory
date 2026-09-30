@@ -5,6 +5,7 @@ import com.deepfine.inventory.domain.InventoryMovement;
 import com.deepfine.inventory.domain.Product;
 import com.deepfine.inventory.dto.InboundRequest;
 import com.deepfine.inventory.dto.InboundResponse;
+import com.deepfine.inventory.dto.InventoryResponse;
 import com.deepfine.inventory.dto.OutboundRequest;
 import com.deepfine.inventory.dto.OutboundResponse;
 import com.deepfine.inventory.exception.InventoryRuleViolationException;
@@ -70,5 +71,11 @@ public class InventoryService {
 
         return new OutboundResponse(
                 product.getId(), product.getSku(), product.getName(), balance.getQuantity());
+    }
+
+    public InventoryResponse getInventory(String sku) {
+        return productRepository
+                .findInventoryBySku(sku)
+                .orElseThrow(() -> new ProductNotFoundException(sku));
     }
 }
