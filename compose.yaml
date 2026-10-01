@@ -1,6 +1,8 @@
 services:
   postgres:
     image: postgres:17
+    cpus: 2.0
+    mem_limit: 2g
     environment:
       POSTGRES_DB: deepfine_inventory
       POSTGRES_USER: deepfine
@@ -14,6 +16,20 @@ services:
       retries: 15
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    cpus: 2.0
+    mem_limit: 2g
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/deepfine_inventory
+      DB_USERNAME: deepfine
+      DB_PASSWORD: deepfine
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:
