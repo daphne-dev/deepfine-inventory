@@ -94,24 +94,24 @@ export default function (data) {
 }
 
 export function verifyInventory(data) {
-	let totalQuantity = 0;
-	let allFound = true;
-	for (const sku of data.skus) {
+	const completed = exec.instance.iterationsCompleted;
+	const receiptsPerSku = Math.floor(completed / data.skus.length);
+	const remainder = completed % data.skus.length;
+	let matched = 0;
+
+	for (let i = 0; i < data.skus.length; i++) {
+		const sku = data.skus[i];
+		const expected = initialQuantity + receiptsPerSku + (i < remainder ? 1 : 0);
 		const response = http.get(`${baseUrl}/api/v1/inventory/${sku}`, {
 			tags: { phase: 'verify' },
 		});
-		if (response.status !== 200) {
-			allFound = false;
-			console.error(`최종 재고 조회 실패: ${sku}, HTTP ${response.status}`);
-			continue;
+		const actual = response.status === 200 ? response.json('quantity') : null;
+		const valid = actual === expected;
+		if (!valid) {
+			console.error(`${sku}: 기대=${expected}, 실제=${actual}, HTTP ${response.status}`);
 		}
-		totalQuantity += JSON.parse(response.body).quantity;
+		matched += Number(valid);
+		check(valid, { '상품별 최종 재고 일치': (result) => result }, { phase: 'verify' });
 	}
-	const expectedQuantity = initialQuantity * data.skus.length + exec.instance.iterationsCompleted;
-	console.log(`최종 재고: 기대=${expectedQuantity}, 실제=${totalQuantity}`);
-	check(
-		{ allFound, totalQuantity, expectedQuantity },
-		{ '최종 재고 합계 일치': (result) => result.allFound && result.totalQuantity === result.expectedQuantity },
-		{ phase: 'verify' },
-	);
+	console.log(`상품별 최종 재고 검증: ${matched}/${data.skus.length}개 일치`);
 }
