@@ -70,10 +70,10 @@
 
    ```json
    {
-    "sku": "DF-DEMO-001",
-    "name": "상품 A",
-    "quantity": 5,
-    "reason": "초기 입고"
+   	"sku": "DF-DEMO-001",
+   	"name": "상품 A",
+   	"quantity": 5,
+   	"reason": "초기 입고"
    }
    ```
 
@@ -81,9 +81,9 @@
 
    ```json
    {
-    "sku": "DF-DEMO-001",
-    "quantity": 2,
-    "reason": "주문 출고"
+   	"sku": "DF-DEMO-001",
+   	"quantity": 2,
+   	"reason": "주문 출고"
    }
    ```
 
@@ -139,7 +139,9 @@ k6 run -e SKU_COUNT=1 -e RATE=1000 -e DURATION=10s -e VUS=500 performance/invent
 k6 run -e SKU_COUNT=20 -e RATE=3000 -e DURATION=10s -e VUS=500 performance/inventory-load.js
 ```
 
-각 반복은 입고 요청 1건입니다. 예를 들어 `RATE=1000`, `DURATION=10s`는 입고 10,000건을 목표로 합니다. 최종 재고 조회는 부하가 끝난 뒤 자동으로 실행되므로 전체 실행 시간은 `DURATION`보다 약 5초 깁니다. 테스트 데이터는 `K6-` 접두사의 SKU로 DB에 남습니다.
+각 반복은 입고 요청 1건입니다. 예를 들어 `RATE=1000`, `DURATION=10s`는 입고 10,000건을 목표로 합니다.
+
+테스트 데이터는 `K6-` 접두사의 SKU로 DB에 남습니다.
 
 ### 측정 결과
 
